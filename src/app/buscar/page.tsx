@@ -3,8 +3,6 @@ import ProductCard from "@/components/ProductCard";
 import SearchFilters from "@/components/SearchFilters";
 import { getProducts } from "@/lib/queries";
 
-export const revalidate = 0;
-
 type SearchParams = Promise<{
   q?: string;
   categoria?: string;

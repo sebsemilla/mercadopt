@@ -4,8 +4,6 @@ import ProductCard from "@/components/ProductCard";
 import SearchFilters from "@/components/SearchFilters";
 import { getProducts } from "@/lib/queries";
 
-export const revalidate = 60;
-
 const CATEGORY_NAMES: Record<string, string> = {
   electronica: "Electrónica",
   ropa: "Ropa y accesorios",

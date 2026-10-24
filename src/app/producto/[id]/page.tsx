@@ -4,8 +4,6 @@ import { getProduct, getRelatedProducts } from "@/lib/queries";
 import ImageGallery from "@/components/ImageGallery";
 import ProductCard from "@/components/ProductCard";
 
-export const revalidate = 60;
-
 export default async function ProductPage({
   params,
 }: {
