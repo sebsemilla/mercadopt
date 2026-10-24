@@ -1,34 +1,19 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { adminLogout, deleteProduct } from "./actions";
+import { deleteProduct } from "./actions";
 
 export const instant = false;
 
 type ProductRow = {
-  id: string;
-  title: string;
-  price: number;
-  currency: string;
-  category: string;
-  condition: string;
-  stock: number;
-  sold: number;
-  created_at: string;
+  id: string; title: string; price: number; currency: string;
+  category: string; condition: string; stock: number; sold: number;
 };
-
-async function requireAdmin() {
-  const cookieStore = await cookies();
-  if (cookieStore.get("admin_session")?.value !== "1") redirect("/admin/login");
-}
 
 function DeleteForm({ id }: { id: string }) {
   return (
     <form action={async () => {
       "use server";
       await deleteProduct(id);
-      redirect("/admin");
     }}>
       <button className="text-xs text-red-400 hover:text-red-600 hover:underline">Eliminar</button>
     </form>
@@ -36,52 +21,37 @@ function DeleteForm({ id }: { id: string }) {
 }
 
 export default async function AdminPage() {
-  await requireAdmin();
-
   const { data } = await supabaseAdmin
     .from("products")
-    .select("id, title, price, currency, category, condition, stock, sold, created_at")
+    .select("id, title, price, currency, category, condition, stock, sold")
     .order("created_at", { ascending: false });
 
   const products = (data ?? []) as ProductRow[];
-  const total = products.length;
-  const totalSold = products.reduce((s, p) => s + p.sold, 0);
-  const totalStock = products.reduce((s, p) => s + p.stock, 0);
-  const activeCategories = new Set(products.map((p) => p.category)).size;
+  const stats = [
+    { label: "Productos", value: products.length },
+    { label: "Unidades vendidas", value: products.reduce((s, p) => s + p.sold, 0) },
+    { label: "Categorías activas", value: new Set(products.map((p) => p.category)).size },
+    { label: "Stock total", value: products.reduce((s, p) => s + p.stock, 0) },
+  ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-[#333]">Panel de administración</h1>
-        <form action={adminLogout}>
-          <button className="text-xs text-[#999] hover:text-[#333] transition-colors">Cerrar sesión</button>
-        </form>
-      </div>
-
-      {/* Stats */}
+    <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: "Productos", value: total },
-          { label: "Unidades vendidas", value: totalSold },
-          { label: "Categorías activas", value: activeCategories },
-          { label: "Stock total", value: totalStock },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded border border-[#EBEBEB] p-4 flex flex-col gap-1">
-            <span className="text-2xl font-semibold text-[#333]">{stat.value}</span>
-            <span className="text-xs text-[#999]">{stat.label}</span>
+        {stats.map((s) => (
+          <div key={s.label} className="bg-white rounded border border-[#EBEBEB] p-4 flex flex-col gap-1">
+            <span className="text-2xl font-semibold text-[#333]">{s.value}</span>
+            <span className="text-xs text-[#999]">{s.label}</span>
           </div>
         ))}
       </div>
 
-      {/* Products table */}
       <div className="bg-white rounded border border-[#EBEBEB] overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#EBEBEB]">
-          <h2 className="text-sm font-semibold text-[#333]">Productos ({total})</h2>
+          <h2 className="text-sm font-semibold text-[#333]">Productos ({products.length})</h2>
           <Link href="/vender" className="text-xs px-3 py-1.5 bg-[#3483FA] text-white rounded hover:bg-[#2968C8] transition-colors">
             + Nuevo producto
           </Link>
         </div>
-
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-[#F5F5F5]">
@@ -94,8 +64,8 @@ export default async function AdminPage() {
             <tbody>
               {products.map((p, i) => (
                 <tr key={p.id} className={i % 2 === 0 ? "bg-white" : "bg-[#FAFAFA]"}>
-                  <td className="px-4 py-3 text-[#333] max-w-[200px]">
-                    <Link href={`/producto/${p.id}`} className="hover:text-[#3483FA] line-clamp-1">{p.title}</Link>
+                  <td className="px-4 py-3 max-w-[200px]">
+                    <Link href={`/producto/${p.id}`} className="text-[#333] hover:text-[#3483FA] line-clamp-1">{p.title}</Link>
                   </td>
                   <td className="px-4 py-3 text-[#666] capitalize">{p.category}</td>
                   <td className="px-4 py-3 text-[#333]">

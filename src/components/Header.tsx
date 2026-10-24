@@ -37,6 +37,13 @@ export default function Header() {
           <Link href="/" className="flex-shrink-0">
             <span className="text-xl font-bold text-[#333]">mercadopt</span>
           </Link>
+          <Link
+            href="/promociones"
+            className="flex-shrink-0 flex items-center gap-1.5 bg-[#FFD000] hover:bg-[#FFC000] text-[#333] text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
+          >
+            <span>🏷️</span>
+            <span>Promociones</span>
+          </Link>
 
           <form className="flex flex-1 max-w-2xl" onSubmit={handleSearch}>
             <input
