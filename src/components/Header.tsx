@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const categories = [
@@ -11,10 +12,19 @@ const categories = [
   { name: "Servicios", slug: "servicios" },
   { name: "Inmuebles", slug: "inmuebles" },
   { name: "Trabajo", slug: "trabajo" },
+  { name: "Juegos", slug: "juegos" },
+  { name: "Libros", slug: "libros" },
 ];
 
 export default function Header() {
   const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const q = query.trim();
+    router.push(q ? `/buscar?q=${encodeURIComponent(q)}` : "/buscar");
+  }
 
   return (
     <header className="sticky top-0 z-50">
@@ -24,10 +34,7 @@ export default function Header() {
             <span className="text-xl font-bold text-[#333]">mercadopt</span>
           </Link>
 
-          <form
-            className="flex flex-1 max-w-2xl"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="flex flex-1 max-w-2xl" onSubmit={handleSearch}>
             <input
               type="text"
               value={query}
