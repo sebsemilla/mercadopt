@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getProduct, getRelatedProducts } from "@/lib/queries";
 import ImageGallery from "@/components/ImageGallery";
 import ProductCard from "@/components/ProductCard";
+import CartButtons from "@/components/CartButtons";
 
 export const instant = false;
 
@@ -66,22 +67,16 @@ export default async function ProductPage({
           )}
 
           {/* Quantity + buttons */}
-          <div className="flex flex-col gap-3 mt-2 max-w-xs">
-            <div className="flex items-center gap-3 text-sm text-[#666]">
-              <span>Cantidad:</span>
-              <div className="flex items-center border border-[#EBEBEB] rounded">
-                <button className="px-3 py-1 hover:bg-[#F5F5F5] text-lg leading-none">−</button>
-                <span className="px-4 py-1 border-x border-[#EBEBEB]">1</span>
-                <button className="px-3 py-1 hover:bg-[#F5F5F5] text-lg leading-none">+</button>
-              </div>
-            </div>
-            <button className="w-full py-3 bg-[#3483FA] hover:bg-[#2968C8] text-white rounded-lg text-sm font-medium transition-colors">
-              Comprar ahora
-            </button>
-            <button className="w-full py-3 bg-[#D2E6FF] hover:bg-[#BAD5FF] text-[#3483FA] rounded-lg text-sm font-medium transition-colors">
-              Agregar al carrito
-            </button>
-          </div>
+          <CartButtons
+            product={{
+              id: product.id,
+              title: product.title,
+              price: product.price,
+              currency: product.currency,
+              image: product.images[0],
+              stock: product.stock,
+            }}
+          />
 
           {/* Seller */}
           {product.seller && (

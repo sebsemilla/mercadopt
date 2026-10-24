@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useCart } from "@/lib/cart-context";
 
 const categories = [
   { name: "Electrónica", slug: "electronica" },
@@ -19,6 +20,7 @@ const categories = [
 export default function Header() {
   const [query, setQuery] = useState("");
   const router = useRouter();
+  const { totalItems } = useCart();
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -57,10 +59,15 @@ export default function Header() {
             <Link href="/auth/login" className="hover:underline">Ingresar</Link>
             <Link href="/auth/register" className="hover:underline font-semibold">Crear cuenta</Link>
             <Link href="/vender" className="hover:underline">Vender</Link>
-            <Link href="/cart" aria-label="Carrito" className="hover:opacity-70">
+            <Link href="/cart" aria-label="Carrito" className="relative hover:opacity-70">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h11M7 13H5.4M10 21a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z" />
               </svg>
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#3483FA] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              )}
             </Link>
           </div>
         </div>
