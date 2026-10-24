@@ -4,6 +4,8 @@ import { getProduct, getRelatedProducts } from "@/lib/queries";
 import ImageGallery from "@/components/ImageGallery";
 import ProductCard from "@/components/ProductCard";
 
+export const instant = false;
+
 export default async function ProductPage({
   params,
 }: {
