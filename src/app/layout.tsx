@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/lib/cart-context";
+import { FavoritesProvider } from "@/lib/favorites-context";
 
 export const metadata: Metadata = {
   title: "MercadoPT — Compra y vende en Uruguay y Argentina",
@@ -14,9 +15,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="es" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-[#EBEBEB]">
         <CartProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <FavoritesProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </FavoritesProvider>
         </CartProvider>
       </body>
     </html>
